@@ -2,7 +2,10 @@ package org.example;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class AddressBookDictionary {
     HashMap<String, AddressBook> addressBookDictionary;
@@ -61,9 +64,23 @@ public class AddressBookDictionary {
     public boolean isExistContact(Contact contact) {
         for (AddressBook addressBook : addressBookDictionary.values()) {
             boolean isContainContact = addressBook.getContactList().stream().anyMatch(contactEntry -> contactEntry.equals(contact));
-             if (isContainContact)
-                 return true;
+            if (isContainContact)
+                return true;
         }
         return false;
+    }
+
+    public List<Contact> getContactFromCityOrState(String cityOrState, boolean isSearchByCity) {
+        List<Contact> contacts = new ArrayList<>();
+        if (isSearchByCity) {
+            for (AddressBook addressBook : addressBookDictionary.values()) {
+               addressBook.getContactList().stream().filter(contactEntry -> contactEntry.getAddress().getCity().equals(cityOrState)).forEach(contact -> contacts.add(contact));
+            }
+        } else {
+            for (AddressBook addressBook : addressBookDictionary.values()) {
+               addressBook.getContactList().stream().filter(contactEntry -> contactEntry.getAddress().getState().equals(cityOrState)).forEach(contact -> contacts.add(contact));
+            }
+        }
+        return contacts;
     }
 }
