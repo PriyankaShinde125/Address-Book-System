@@ -1,7 +1,6 @@
 package org.example;
 
 import java.util.ArrayList;
-import java.util.stream.Stream;
 
 public class AddressBook {
     ArrayList<Contact> contactList;
@@ -26,5 +25,18 @@ public class AddressBook {
     public void addContact() {
         Contact contact = new Contact();
         contactList.add(contact);
+    }
+
+    public void editContact(String firstName, String lastName) {
+        Contact contact = contactList.stream()
+                .filter(tempContact -> firstName.equals(tempContact.getFirstName()) && lastName.equals(tempContact.getLastName()))
+                .findAny()
+                .orElse(null);
+        if (contact != null) {
+            System.out.println("Your details : " + contact);
+            contact.edit();
+            System.out.println("Edited : " + contact);
+        } else
+            System.out.println("Contact not found");
     }
 }

@@ -16,7 +16,7 @@ public class Address {
     }
 
     public Address() {
-        Scanner sc=new Scanner(System.in);
+        Scanner sc = new Scanner(System.in);
         System.out.print("\n Area = ");
         area = sc.next();
         System.out.print("\n City = ");
