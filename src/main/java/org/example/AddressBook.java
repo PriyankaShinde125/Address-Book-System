@@ -1,6 +1,7 @@
 package org.example;
 
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class AddressBook {
     ArrayList<Contact> contactList;
@@ -23,8 +24,13 @@ public class AddressBook {
     }
 
     public void addContact() {
-        Contact contact = new Contact();
-        contactList.add(contact);
+        Scanner sc = new Scanner(System.in);
+        System.out.println("How many contacts do you want to create ? ");
+        int numberOfContacts = sc.nextInt();
+        for (int i = 0; i < numberOfContacts; i++) {
+            Contact contact = new Contact();
+            contactList.add(contact);
+        }
     }
 
     public void editContact(String firstName, String lastName) {
@@ -45,10 +51,10 @@ public class AddressBook {
                 .filter(tempContact -> firstName.equals(tempContact.getFirstName()) && lastName.equals(tempContact.getLastName()))
                 .findAny()
                 .orElse(null);
-        if(contact != null) {
+        if (contact != null) {
             contactList.remove(contact);
-            System.out.println("Deleted : "+contact);
-        }else
+            System.out.println("Deleted : " + contact);
+        } else
             System.out.println("Contact not available");
     }
 }
