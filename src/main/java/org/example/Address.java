@@ -1,5 +1,7 @@
 package org.example;
 
+import java.util.Scanner;
+
 public class Address {
     private String area;
     private String city;
@@ -11,6 +13,18 @@ public class Address {
         this.city = city;
         this.state = state;
         this.zip = zip;
+    }
+
+    public Address() {
+        Scanner sc=new Scanner(System.in);
+        System.out.print("\n Area = ");
+        area = sc.next();
+        System.out.print("\n City = ");
+        city = sc.next();
+        System.out.print("\n State = ");
+        state = sc.next();
+        System.out.print("\n Zip = ");
+        zip = sc.nextInt();
     }
 
     public String getArea() {

@@ -20,9 +20,11 @@ public class AddressBook {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("AddressBook : \n");
-        Stream.of(contactList).forEach(contact -> builder.append(contact));
-        return builder.toString();
+        return " contactList = \n" + contactList;
+    }
+
+    public void addContact() {
+        Contact contact = new Contact();
+        contactList.add(contact);
     }
 }

@@ -1,20 +1,27 @@
 package org.example;
 
+import java.util.Scanner;
+
 public class AddressBookMain {
+    AddressBook addressBook;
+
     public static void main(String[] args) {
-        System.out.println("Welcome to address book");
-        AddressBook addressBook = new AddressBook();
-        String firstName = "Priyanka";
-        String lastName = "Shinde";
-        String phoneNo = "9518905320";
-        String emailId = "pshinde@gmail.com";
-        String area = "Bhugaon";
-        String city = "Pune";
-        String state = "Maharashtra";
-        int zip = 412115;
-        Address postalAddress = new Address(area, city, state, zip);
-        Contact contact = new Contact(firstName, lastName, Long.parseLong(phoneNo), emailId, postalAddress);
-        addressBook.getContactList().add(contact);
-        System.out.println(addressBook);
+        AddressBookMain main = new AddressBookMain();
+        main.addressBook = new AddressBook();
+        Scanner sc = new Scanner(System.in);
+        while (true) {
+            System.out.println("Enter your choice : \n1 : Add new contact to address book \n0 : Exit");
+            int choice = sc.nextInt();
+            switch (choice) {
+                case Constants.ADD_CONTACT:
+                    main.addressBook.addContact();
+                    System.out.println(main.addressBook);
+                    break;
+                case Constants.EXIT:
+                    return;
+                default:
+                    System.out.println("Invalid Input");
+            }
+        }
     }
 }
