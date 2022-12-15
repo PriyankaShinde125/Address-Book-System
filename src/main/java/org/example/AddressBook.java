@@ -39,4 +39,16 @@ public class AddressBook {
         } else
             System.out.println("Contact not found");
     }
+
+    public void deleteContact(String firstName, String lastName) {
+        Contact contact = contactList.stream()
+                .filter(tempContact -> firstName.equals(tempContact.getFirstName()) && lastName.equals(tempContact.getLastName()))
+                .findAny()
+                .orElse(null);
+        if(contact != null) {
+            contactList.remove(contact);
+            System.out.println("Deleted : "+contact);
+        }else
+            System.out.println("Contact not available");
+    }
 }
