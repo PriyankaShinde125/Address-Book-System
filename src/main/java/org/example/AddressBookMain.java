@@ -1,10 +1,7 @@
 package org.example;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
-import java.util.stream.Stream;
 
 public class AddressBookMain {
     public static final int ADD_CONTACT = 1;
@@ -14,6 +11,8 @@ public class AddressBookMain {
     public static final int CREATE_ADDRESS_BOOK = 4;
     public static final int PRINT_ADDRESS_BOOK_DICTIONARY = 5;
     public static final int SEARCH_CONTACT_BY_CITY_OR_STATE = 6;
+    public static final int GET_CONTACT_BY_CITY = 7;
+    public static final int GET_CONTACT_BY_STATE = 8;
 
     public static void main(String[] args) {
         AddressBookDictionary addressBookDictionary = new AddressBookDictionary();
@@ -30,6 +29,8 @@ public class AddressBookMain {
                     "\n4 : Create new address book " +
                     "\n5 : Print address book dictionary " +
                     "\n6 : Search person by city or state " +
+                    "\n7 : Get contacts by city" +
+                    "\n8 : Get contacts by state" +
                     "\n0 : Exit");
 
             int choice = sc.nextInt();
@@ -38,12 +39,12 @@ public class AddressBookMain {
                     System.out.println("How many contacts do you want to create ? ");
                     int numberOfContacts = sc.nextInt();
                     for (int i = 0; i < numberOfContacts; i++) {
+                        addressBook = addressBookDictionary.selectAddressBook();
                         Contact contact = new Contact();
                         if (addressBookDictionary.isExistContact(contact)) {
                             System.out.println("Already exist. Try with another name");
                             i--;
                         } else {
-                            addressBook = addressBookDictionary.selectAddressBook();
                             addressBook.addContact(contact);
                             System.out.println(addressBookDictionary.getAddressBookDictionary());
                         }
@@ -52,9 +53,9 @@ public class AddressBookMain {
 
                 case EDIT_CONTACT:
                     System.out.println("Enter first name ");
-                    firstName = sc.next();
+                    firstName = sc.next().toLowerCase();
                     System.out.println("Enter last name ");
-                    lastName = sc.next();
+                    lastName = sc.next().toLowerCase();
                     addressBook = addressBookDictionary.getAddressBook(firstName, lastName);
                     if (addressBook != null)
                         addressBook.editContact(firstName, lastName);
@@ -63,9 +64,9 @@ public class AddressBookMain {
 
                 case DELETE_CONTACT:
                     System.out.println("Enter first name ");
-                    firstName = sc.next();
+                    firstName = sc.next().toLowerCase();
                     System.out.println("Enter last name ");
-                    lastName = sc.next();
+                    lastName = sc.next().toLowerCase();
                     addressBook = addressBookDictionary.getAddressBook(firstName, lastName);
                     if (addressBook != null)
                         addressBook.deleteContact(firstName, lastName);
@@ -81,7 +82,9 @@ public class AddressBookMain {
                     break;
 
                 case SEARCH_CONTACT_BY_CITY_OR_STATE:
-                    System.out.println("Select option : \n1 : search by city \n2 : search by state");
+                    System.out.println("Select option : " +
+                            "\n1 : search by city " +
+                            "\n2 : search by state");
                     int option = sc.nextInt();
                     boolean isSearchByCity = false;
                     String searchKey = null;
@@ -99,6 +102,18 @@ public class AddressBookMain {
                         List<Contact> contactsFromCityOrState = addressBookDictionary.getContactFromCityOrState(searchKey, isSearchByCity);
                         contactsFromCityOrState.forEach(contact -> System.out.println(contact));
                     }
+                    break;
+
+                case GET_CONTACT_BY_CITY:
+                    addressBookDictionary
+                            .getCityWiseContacts()
+                            .forEach((key, value) -> System.out.println("City = " + key + "\nContacts = " + value));
+                    break;
+
+                case GET_CONTACT_BY_STATE:
+                    addressBookDictionary
+                            .getStateWiseContacts()
+                            .forEach((key, value) -> System.out.println("City = " + key + "\nContacts = " + value));
                     break;
 
                 case EXIT:

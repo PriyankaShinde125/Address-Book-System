@@ -1,5 +1,6 @@
 package org.example;
 
+import java.util.Locale;
 import java.util.Scanner;
 
 public class Contact {
@@ -15,14 +16,20 @@ public class Contact {
     private String lastName;
     private Long phoneNumber;
     private String emailId;
-    private Address address;
+    private String area;
+    private String city;
+    private String state;
+    private int zip;
 
-    public Contact(String firstName, String lastName, Long phoneNumber, String emailId, Address address) {
+    public Contact(String firstName, String lastName, Long phoneNumber, String emailId, String area, String city, String state, int zip) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.phoneNumber = phoneNumber;
         this.emailId = emailId;
-        this.address = address;
+        this.area = area;
+        this.city = city;
+        this.state = state;
+        this.zip = zip;
     }
 
     @Override
@@ -35,14 +42,21 @@ public class Contact {
         Scanner sc = new Scanner(System.in);
         System.out.println("Enter your details to create contact : ");
         System.out.print(" First name = ");
-        firstName = sc.next();
+        firstName = sc.next().toLowerCase();
         System.out.print("\n Last name = ");
-        lastName = sc.next();
+        lastName = sc.next().toLowerCase();
         System.out.print("\n Phone no = ");
         phoneNumber = Long.valueOf(sc.next());
         System.out.print("\n Email Id = ");
         emailId = sc.next();
-        address = new Address();
+        System.out.print("\n Area = ");
+        area = sc.next();
+        System.out.print("\n City = ");
+        city = sc.next();
+        System.out.print("\n State = ");
+        state = sc.next();
+        System.out.print("\n Zip = ");
+        zip = sc.nextInt();
     }
 
     public String getFirstName() {
@@ -77,17 +91,42 @@ public class Contact {
         this.emailId = emailId;
     }
 
-    public Address getAddress() {
-        return address;
+    public String getArea() {
+        return area;
     }
 
-    public void setAddress(Address address) {
-        this.address = address;
+    public void setArea(String area) {
+        this.area = area;
     }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public int getZip() {
+        return zip;
+    }
+
+    public void setZip(int zip) {
+        this.zip = zip;
+    }
+
 
     @Override
     public String toString() {
-        return "{ First name = " + firstName + "\n Lastname = " + lastName + "\n Phone number = " + phoneNumber + "\n Email Id = " + emailId + "\n Address = " + address + "}";
+        return "{ First name = " + firstName + "\n Lastname = " + lastName + "\n Phone number = " + phoneNumber + "\n Email Id = " + emailId + "\n Address = " + area + " , " + city + " , " + state + " , " + zip + "\n" + "}";
     }
 
     public void edit() {
@@ -114,19 +153,19 @@ public class Contact {
                 break;
             case AREA:
                 System.out.println("Enter Area = ");
-                address.setArea(sc.next());
+                setArea(sc.next());
                 break;
             case CITY:
                 System.out.println("Enter city = ");
-                address.setArea(sc.next());
+                setArea(sc.next());
                 break;
             case STATE:
                 System.out.println("Enter state = ");
-                address.setState(sc.next());
+                setState(sc.next());
                 break;
             case ZIP:
                 System.out.println("Enter Zip = ");
-                address.setZip(Integer.parseInt(sc.next()));
+                setZip(Integer.parseInt(sc.next()));
                 break;
             default:
                 System.out.println("Invalid input");
