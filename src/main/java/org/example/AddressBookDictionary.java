@@ -6,6 +6,10 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 public class AddressBookDictionary {
+    public static final int CITY_WISE_COLLECTOR = 0;
+    public static final int STATE_WISE_COLLECTOR = 1;
+    public static final int ZIP_WISE_COLLECTOR = 2;
+
     HashMap<String, AddressBook> addressBookDictionary;
 
     public AddressBookDictionary() {
@@ -92,40 +96,50 @@ public class AddressBookDictionary {
             return contactEntry -> contactEntry.getState().equals(cityOrState);
     }
 
-    public Map<String, List<Contact>> getCityWiseOrStateWiseContacts(boolean isCityWise) {
-        Map<String, List<Contact>> map = new HashMap<>();
-        addressBookDictionary.values().forEach(addressBook -> {
-            addressBook.getContactList()
-                    .stream().collect(getStateWiseOrCityWiseContactMapCollector(isCityWise))
-                    .forEach((key, value) -> {
-                        if (map.containsKey(key)) {
-                            map.get(key).addAll(value);
-                        } else {
-                            map.put(key, value);
-                        }
-                    });
-        });
+    public Map<String, List<Contact>> getCityWiseOrStateWiseContacts(int sortingFlag) {
+        Map<String, List<Contact>> map = addressBookDictionary.values().stream()
+                .flatMap(addressBook -> addressBook.getContactList().stream())
+                .collect(getStateWiseOrCityWiseContactMapCollector(sortingFlag));
         map.forEach((key, value) -> System.out.println("City = " + key + "\nContacts = " + value));
         return map;
     }
 
 
-    private static Collector<Contact, ?, Map<String, List<Contact>>> getStateWiseOrCityWiseContactMapCollector(boolean isCityWise) {
-        if (isCityWise)
+    private static Collector<Contact, ?, Map<String, List<Contact>>> getStateWiseOrCityWiseContactMapCollector(int sortingFlag) {
+        if (sortingFlag == CITY_WISE_COLLECTOR)
             return Collectors.groupingBy(Contact::getCity);
-        else
+        else if (sortingFlag == STATE_WISE_COLLECTOR)
             return Collectors.groupingBy(Contact::getState);
+        else
+            return Collectors.groupingBy(Contact::getZipString);
     }
 
     public void getCityWiseContactsCount() {
-        getCityWiseOrStateWiseContacts(true).forEach((key, value) -> System.out.println("State = " + key + "\nContacts = " + value.size()));
+        getCityWiseOrStateWiseContacts(CITY_WISE_COLLECTOR)
+                .forEach((key, value) -> System.out.println("State = " + key + "\nContacts = " + value.size()));
     }
 
     public void getStateWiseContactsCount() {
-        getCityWiseOrStateWiseContacts(false).forEach((key, value) -> System.out.println("State = " + key + "\nContacts = " + value.size()));
+        getCityWiseOrStateWiseContacts(STATE_WISE_COLLECTOR)
+                .forEach((key, value) -> System.out.println("State = " + key + "\nContacts = " + value.size()));
     }
 
     public void sortAddressBookEntries() {
-        addressBookDictionary.values().stream().flatMap(addressBook -> addressBook.getContactList().stream()).sorted(Contact::compareTo).collect(Collectors.toList()).stream().forEach(System.out::println);
+        addressBookDictionary.values().stream()
+                .flatMap(addressBook -> addressBook.getContactList().stream())
+                .sorted(Contact::compareTo)
+                .collect(Collectors.toList())
+                .stream()
+                .forEach(System.out::println);
+    }
+
+
+    public void sortByCityOrStateOrZip(int shouldSortByCityOrStateOrZip) {
+        addressBookDictionary.values().stream()
+                .flatMap(addressBook -> addressBook.getContactList().stream())
+                .collect(getStateWiseOrCityWiseContactMapCollector(shouldSortByCityOrStateOrZip))
+                .entrySet().stream()
+                .sorted(Map.Entry.comparingByKey())
+                .forEach(System.out::println);
     }
 }

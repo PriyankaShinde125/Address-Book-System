@@ -119,6 +119,10 @@ public class Contact implements Comparable<Contact> {
         return zip;
     }
 
+    public String getZipString() {
+        return String.valueOf(zip);
+    }
+
     public void setZip(int zip) {
         this.zip = zip;
     }

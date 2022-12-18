@@ -1,6 +1,5 @@
 package org.example;
 
-import java.util.List;
 import java.util.Scanner;
 
 public class AddressBookMain {
@@ -16,6 +15,9 @@ public class AddressBookMain {
     public static final int GET_CITY_WISE_CONTACT_COUNT = 9;
     public static final int GET_STATE_WISE_CONTACT_COUNT = 10;
     public static final int SORT_ADDRESS_BOOK_ENTRIES = 11;
+    public static final int SORT_BY_CITY = 12;
+    public static final int SORT_BY_STATE = 13;
+    public static final int SORT_BY_ZIP = 14;
 
     public static void main(String[] args) {
         AddressBookDictionary addressBookDictionary = new AddressBookDictionary();
@@ -37,6 +39,9 @@ public class AddressBookMain {
                     "\n9 : Get contact count by city" +
                     "\n10 : Get contact count by state" +
                     "\n11 : Sort address book entries" +
+                    "\n12 : Sort by city" +
+                    "\n13 : Sort by state" +
+                    "\n14 : Sort by Zip" +
                     "\n0 : Exit");
 
             int choice = sc.nextInt();
@@ -109,11 +114,11 @@ public class AddressBookMain {
                     break;
 
                 case GET_CONTACT_BY_CITY:
-                    addressBookDictionary.getCityWiseOrStateWiseContacts(true);
+                    addressBookDictionary.getCityWiseOrStateWiseContacts(AddressBookDictionary.CITY_WISE_COLLECTOR);
                     break;
 
                 case GET_CONTACT_BY_STATE:
-                    addressBookDictionary.getCityWiseOrStateWiseContacts(false);
+                    addressBookDictionary.getCityWiseOrStateWiseContacts(AddressBookDictionary.STATE_WISE_COLLECTOR);
                     break;
 
                 case GET_CITY_WISE_CONTACT_COUNT:
@@ -126,6 +131,18 @@ public class AddressBookMain {
 
                 case SORT_ADDRESS_BOOK_ENTRIES:
                     addressBookDictionary.sortAddressBookEntries();
+                    break;
+
+                case SORT_BY_CITY:
+                    addressBookDictionary.sortByCityOrStateOrZip(AddressBookDictionary.CITY_WISE_COLLECTOR);
+                    break;
+
+                case SORT_BY_STATE:
+                    addressBookDictionary.sortByCityOrStateOrZip(AddressBookDictionary.STATE_WISE_COLLECTOR);
+                    break;
+
+                case SORT_BY_ZIP:
+                    addressBookDictionary.sortByCityOrStateOrZip(AddressBookDictionary.ZIP_WISE_COLLECTOR);
                     break;
 
                 case EXIT:
