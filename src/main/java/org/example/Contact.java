@@ -3,7 +3,7 @@ package org.example;
 import java.util.Locale;
 import java.util.Scanner;
 
-public class Contact {
+public class Contact implements Comparable<Contact> {
     public static final int FIRST_NAME = 1;
     public static final int LAST_NAME = 2;
     public static final int PHONE_NUMBER = 3;
@@ -171,5 +171,14 @@ public class Contact {
                 System.out.println("Invalid input");
                 break;
         }
+    }
+
+    @Override
+    public int compareTo(Contact contact) {
+        int result = this.firstName.compareTo(contact.getFirstName());
+        if (result != 0)
+            return result;
+        else
+            return this.lastName.compareTo(contact.getLastName());
     }
 }

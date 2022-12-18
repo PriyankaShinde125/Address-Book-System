@@ -15,6 +15,7 @@ public class AddressBookMain {
     public static final int GET_CONTACT_BY_STATE = 8;
     public static final int GET_CITY_WISE_CONTACT_COUNT = 9;
     public static final int GET_STATE_WISE_CONTACT_COUNT = 10;
+    public static final int SORT_ADDRESS_BOOK_ENTRIES = 11;
 
     public static void main(String[] args) {
         AddressBookDictionary addressBookDictionary = new AddressBookDictionary();
@@ -33,8 +34,9 @@ public class AddressBookMain {
                     "\n6 : Search person by city or state " +
                     "\n7 : Get contacts by city" +
                     "\n8 : Get contacts by state" +
-                    "\n9 : Get contact count by city"+
-                    "\n10 : Get contact count by state"+
+                    "\n9 : Get contact count by city" +
+                    "\n10 : Get contact count by state" +
+                    "\n11 : Sort address book entries" +
                     "\n0 : Exit");
 
             int choice = sc.nextInt();
@@ -102,33 +104,28 @@ public class AddressBookMain {
                     } else
                         System.out.println("Invalid option selected");
                     if (searchKey != null) {
-                        List<Contact> contactsFromCityOrState = addressBookDictionary.getContactFromCityOrState(searchKey, isSearchByCity);
-                        contactsFromCityOrState.forEach(System.out::println);
+                        addressBookDictionary.getContactFromCityOrState(searchKey, isSearchByCity);
                     }
                     break;
 
                 case GET_CONTACT_BY_CITY:
-                    addressBookDictionary
-                            .getCityWiseContacts()
-                            .forEach((key, value) -> System.out.println("City = " + key + "\nContacts = " + value));
+                    addressBookDictionary.getCityWiseOrStateWiseContacts(true);
                     break;
 
                 case GET_CONTACT_BY_STATE:
-                    addressBookDictionary
-                            .getStateWiseContacts()
-                            .forEach((key, value) -> System.out.println("State = " + key + "\nContacts = " + value));
+                    addressBookDictionary.getCityWiseOrStateWiseContacts(false);
                     break;
 
                 case GET_CITY_WISE_CONTACT_COUNT:
-                    addressBookDictionary
-                            .getCityWiseContacts()
-                            .forEach((key, value) -> System.out.println("City = " + key + "\nContacts = " + value.size()));
+                    addressBookDictionary.getCityWiseContactsCount();
                     break;
 
                 case GET_STATE_WISE_CONTACT_COUNT:
-                    addressBookDictionary
-                            .getStateWiseContacts()
-                            .forEach((key, value) -> System.out.println("State = " + key + "\nContacts = " + value.size()));
+                    addressBookDictionary.getStateWiseContactsCount();
+                    break;
+
+                case SORT_ADDRESS_BOOK_ENTRIES:
+                    addressBookDictionary.sortAddressBookEntries();
                     break;
 
                 case EXIT:

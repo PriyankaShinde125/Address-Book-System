@@ -1,6 +1,8 @@
 package org.example;
 
 import java.util.*;
+import java.util.function.Predicate;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 public class AddressBookDictionary {
@@ -72,31 +74,29 @@ public class AddressBookDictionary {
         return false;
     }
 
-    public List<Contact> getContactFromCityOrState(String cityOrState, boolean isSearchByCity) {
+    public void getContactFromCityOrState(String cityOrState, boolean isSearchByCity) {
         List<Contact> contacts = new ArrayList<>();
-        if (isSearchByCity) {
-            for (AddressBook addressBook : addressBookDictionary.values()) {
-                addressBook.getContactList()
-                        .stream()
-                        .filter(contactEntry -> contactEntry.getCity().equals(cityOrState))
-                        .forEach(contacts::add);
-            }
-        } else {
-            for (AddressBook addressBook : addressBookDictionary.values()) {
-                addressBook.getContactList()
-                        .stream()
-                        .filter(contactEntry -> contactEntry.getState().equals(cityOrState))
-                        .forEach(contacts::add);
-            }
+        for (AddressBook addressBook : addressBookDictionary.values()) {
+            addressBook.getContactList()
+                    .stream()
+                    .filter(getContactByCityOrStatePredicate(cityOrState, isSearchByCity))
+                    .forEach(contacts::add);
         }
-        return contacts;
+        contacts.forEach(System.out::println);
     }
 
-    public Map<String, List<Contact>> getCityWiseContacts() {
+    private static Predicate<Contact> getContactByCityOrStatePredicate(String cityOrState, boolean isSearchByCity) {
+        if (isSearchByCity)
+            return contactEntry -> contactEntry.getCity().equals(cityOrState);
+        else
+            return contactEntry -> contactEntry.getState().equals(cityOrState);
+    }
+
+    public Map<String, List<Contact>> getCityWiseOrStateWiseContacts(boolean isCityWise) {
         Map<String, List<Contact>> map = new HashMap<>();
         addressBookDictionary.values().forEach(addressBook -> {
             addressBook.getContactList()
-                    .stream().collect(Collectors.groupingBy(Contact::getCity))
+                    .stream().collect(getStateWiseOrCityWiseContactMapCollector(isCityWise))
                     .forEach((key, value) -> {
                         if (map.containsKey(key)) {
                             map.get(key).addAll(value);
@@ -105,22 +105,27 @@ public class AddressBookDictionary {
                         }
                     });
         });
+        map.forEach((key, value) -> System.out.println("City = " + key + "\nContacts = " + value));
         return map;
     }
 
-    public Map<String, List<Contact>> getStateWiseContacts() {
-        Map<String, List<Contact>> map = new HashMap<>();
-        addressBookDictionary.values().forEach(addressBook -> {
-            addressBook.getContactList()
-                    .stream().collect(Collectors.groupingBy(Contact::getState))
-                    .forEach((key, value) -> {
-                        if (map.containsKey(key)) {
-                            map.get(key).addAll(value);
-                        } else {
-                            map.put(key, value);
-                        }
-                    });
-        });
-        return map;
+
+    private static Collector<Contact, ?, Map<String, List<Contact>>> getStateWiseOrCityWiseContactMapCollector(boolean isCityWise) {
+        if (isCityWise)
+            return Collectors.groupingBy(Contact::getCity);
+        else
+            return Collectors.groupingBy(Contact::getState);
+    }
+
+    public void getCityWiseContactsCount() {
+        getCityWiseOrStateWiseContacts(true).forEach((key, value) -> System.out.println("State = " + key + "\nContacts = " + value.size()));
+    }
+
+    public void getStateWiseContactsCount() {
+        getCityWiseOrStateWiseContacts(false).forEach((key, value) -> System.out.println("State = " + key + "\nContacts = " + value.size()));
+    }
+
+    public void sortAddressBookEntries() {
+        addressBookDictionary.values().stream().flatMap(addressBook -> addressBook.getContactList().stream()).sorted(Contact::compareTo).collect(Collectors.toList()).stream().forEach(System.out::println);
     }
 }
