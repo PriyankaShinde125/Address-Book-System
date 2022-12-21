@@ -1,9 +1,16 @@
 package org.example;
 
+import java.io.*;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class AddressBookDictionary {
     public static final int CITY_WISE_COLLECTOR = 0;
@@ -99,13 +106,13 @@ public class AddressBookDictionary {
     public Map<String, List<Contact>> getCityWiseOrStateWiseContacts(int sortingFlag) {
         Map<String, List<Contact>> map = addressBookDictionary.values().stream()
                 .flatMap(addressBook -> addressBook.getContactList().stream())
-                .collect(getStateWiseOrCityWiseContactMapCollector(sortingFlag));
+                .collect(getStateOrCityOrZipWiseContactMapCollector(sortingFlag));
         map.forEach((key, value) -> System.out.println("City = " + key + "\nContacts = " + value));
         return map;
     }
 
 
-    private static Collector<Contact, ?, Map<String, List<Contact>>> getStateWiseOrCityWiseContactMapCollector(int sortingFlag) {
+    private static Collector<Contact, ?, Map<String, List<Contact>>> getStateOrCityOrZipWiseContactMapCollector(int sortingFlag) {
         if (sortingFlag == CITY_WISE_COLLECTOR)
             return Collectors.groupingBy(Contact::getCity);
         else if (sortingFlag == STATE_WISE_COLLECTOR)
@@ -129,7 +136,6 @@ public class AddressBookDictionary {
                 .flatMap(addressBook -> addressBook.getContactList().stream())
                 .sorted(Contact::compareTo)
                 .collect(Collectors.toList())
-                .stream()
                 .forEach(System.out::println);
     }
 
@@ -137,9 +143,35 @@ public class AddressBookDictionary {
     public void sortByCityOrStateOrZip(int shouldSortByCityOrStateOrZip) {
         addressBookDictionary.values().stream()
                 .flatMap(addressBook -> addressBook.getContactList().stream())
-                .collect(getStateWiseOrCityWiseContactMapCollector(shouldSortByCityOrStateOrZip))
+                .collect(getStateOrCityOrZipWiseContactMapCollector(shouldSortByCityOrStateOrZip))
                 .entrySet().stream()
                 .sorted(Map.Entry.comparingByKey())
                 .forEach(System.out::println);
+    }
+
+    public void readDataFromTextFile() throws CustomException {
+        try {
+            Path path = Paths.get("src/main/resources/AddressBookDictionary.txt");
+            Stream<String> lines = Files.lines(path);
+            String data = lines.collect(Collectors.joining("\n"));
+            lines.close();
+            System.out.println(data);
+        } catch (IOException e) {
+            throw new CustomException(ExceptionType.IO_EXCEPTION);
+        }
+    }
+
+    public void writeDataToTextFile() throws CustomException {
+        Path path = Paths.get("src/main/resources/AddressBookDictionary.txt");
+        StringBuilder contentToWriteFile = new StringBuilder();
+        try (BufferedWriter bw = Files.newBufferedWriter(path)) {
+            addressBookDictionary.forEach((s, addressBook) -> {
+                contentToWriteFile.append(s + " : " + addressBook.getContactList() + "\n\n");
+            });
+            bw.write(contentToWriteFile.toString());
+            System.out.println("Data write to file successfully");
+        } catch (IOException e) {
+            throw new CustomException(ExceptionType.IO_EXCEPTION);
+        }
     }
 }

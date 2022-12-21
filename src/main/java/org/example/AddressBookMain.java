@@ -18,8 +18,10 @@ public class AddressBookMain {
     public static final int SORT_BY_CITY = 12;
     public static final int SORT_BY_STATE = 13;
     public static final int SORT_BY_ZIP = 14;
+    public static final int WRITE_TO_TEXT_FILE = 15;
+    public static final int READ_FROM_TEXT_FILE = 16;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws CustomException {
         AddressBookDictionary addressBookDictionary = new AddressBookDictionary();
         Scanner sc = new Scanner(System.in);
         String firstName;
@@ -42,6 +44,7 @@ public class AddressBookMain {
                     "\n12 : Sort by city" +
                     "\n13 : Sort by state" +
                     "\n14 : Sort by Zip" +
+                    "\n15 : Write to file" +
                     "\n0 : Exit");
 
             int choice = sc.nextInt();
@@ -143,6 +146,14 @@ public class AddressBookMain {
 
                 case SORT_BY_ZIP:
                     addressBookDictionary.sortByCityOrStateOrZip(AddressBookDictionary.ZIP_WISE_COLLECTOR);
+                    break;
+
+                case WRITE_TO_TEXT_FILE:
+                    addressBookDictionary.writeDataToTextFile();
+                    break;
+
+                case READ_FROM_TEXT_FILE:
+                    addressBookDictionary.readDataFromTextFile();
                     break;
 
                 case EXIT:

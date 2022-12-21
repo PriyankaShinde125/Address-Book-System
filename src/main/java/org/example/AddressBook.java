@@ -9,6 +9,10 @@ public class AddressBook {
         contactList = new ArrayList<Contact>();
     }
 
+    public AddressBook(ArrayList<Contact> contactList) {
+        this.contactList = contactList;
+    }
+
     public ArrayList<Contact> getContactList() {
         return contactList;
     }
