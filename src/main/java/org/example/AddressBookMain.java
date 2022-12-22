@@ -23,6 +23,8 @@ public class AddressBookMain {
     public static final int READ_FROM_TEXT_FILE = 16;
     public static final int READ_FROM_CSV_FILE = 17;
     public static final int WRITE_TO_CSV_FILE = 18;
+    public static final int READ_FROM_JSON_FILE = 19;
+    public static final int WRITE_TO_JSON_FILE = 20;
 
     public static void main(String[] args) throws CustomException, FileNotFoundException {
         AddressBookDictionary addressBookDictionary = new AddressBookDictionary();
@@ -51,6 +53,8 @@ public class AddressBookMain {
                     "\n16 : Read from file" +
                     "\n17 : Read from CSV file" +
                     "\n18 : Write to csv file" +
+                    "\n19 : Read from json file" +
+                    "\n20 : Write to json file" +
                     "\n0 : Exit");
 
             int choice = sc.nextInt();
@@ -169,6 +173,14 @@ public class AddressBookMain {
 
                 case WRITE_TO_CSV_FILE:
                     addressBookDictionary.writeToCsvFile();
+                    break;
+
+                case READ_FROM_JSON_FILE:
+                    addressBookDictionary.readFromJsonFile();
+                    break;
+
+                case WRITE_TO_JSON_FILE:
+                    addressBookDictionary.writeToJsonFile();
                     break;
 
                 case EXIT:

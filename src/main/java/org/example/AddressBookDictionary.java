@@ -1,5 +1,6 @@
 package org.example;
 
+import com.google.gson.Gson;
 import com.opencsv.bean.*;
 import com.opencsv.exceptions.CsvDataTypeMismatchException;
 import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
@@ -147,6 +148,7 @@ public class AddressBookDictionary {
                 .sorted(getComparator(shouldSortByCityOrStateOrZip))
                 .forEach(System.out::println);
     }
+
     private Comparator<Contact> getComparator(int option) {
         return (contact1, contact2) -> {
             if (option == STATE_WISE_COLLECTOR)
@@ -209,6 +211,25 @@ public class AddressBookDictionary {
             throw new CustomException(ExceptionType.IO_EXCEPTION);
         } catch (CsvRequiredFieldEmptyException | CsvDataTypeMismatchException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    public void readFromJsonFile() throws CustomException {
+        Gson gson = new Gson();
+        try (Reader reader = Files.newBufferedReader(Paths.get("src/main/resources/AddressBookDictionary.json"))) {
+            HashMap<?,?> map = gson.fromJson(reader, HashMap.class);
+            map.forEach((s, addressBook) -> System.out.println(s + "=" + addressBook));
+        } catch (IOException e) {
+            throw new CustomException(ExceptionType.IO_EXCEPTION);
+        }
+    }
+
+    public void writeToJsonFile() throws CustomException {
+        try (Writer writer = new FileWriter("src/main/resources/AddressBookDictionary.json")) {
+            new Gson().toJson(addressBookDictionary, writer);
+            System.out.println("Data written to file successfully");
+        } catch (IOException e) {
+            throw new CustomException(ExceptionType.IO_EXCEPTION);
         }
     }
 }
