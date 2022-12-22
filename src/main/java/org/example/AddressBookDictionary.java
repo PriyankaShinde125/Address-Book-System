@@ -1,13 +1,15 @@
 package org.example;
 
+import com.opencsv.bean.*;
+import com.opencsv.exceptions.CsvDataTypeMismatchException;
+import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
+
 import java.io.*;
-import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -139,14 +141,21 @@ public class AddressBookDictionary {
                 .forEach(System.out::println);
     }
 
-
     public void sortByCityOrStateOrZip(int shouldSortByCityOrStateOrZip) {
         addressBookDictionary.values().stream()
                 .flatMap(addressBook -> addressBook.getContactList().stream())
-                .collect(getStateOrCityOrZipWiseContactMapCollector(shouldSortByCityOrStateOrZip))
-                .entrySet().stream()
-                .sorted(Map.Entry.comparingByKey())
+                .sorted(getComparator(shouldSortByCityOrStateOrZip))
                 .forEach(System.out::println);
+    }
+    private Comparator<Contact> getComparator(int option) {
+        return (contact1, contact2) -> {
+            if (option == STATE_WISE_COLLECTOR)
+                return (contact1.getState().toLowerCase()).compareTo(contact2.getState().toLowerCase());
+            if (option == CITY_WISE_COLLECTOR)
+                return (contact1.getCity().toLowerCase()).compareTo(contact2.getCity().toLowerCase());
+            else
+                return (Integer.valueOf(contact1.getZip()).compareTo(Integer.valueOf(contact2.getZip())));
+        };
     }
 
     public void readDataFromTextFile() throws CustomException {
@@ -172,6 +181,34 @@ public class AddressBookDictionary {
             System.out.println("Data write to file successfully");
         } catch (IOException e) {
             throw new CustomException(ExceptionType.IO_EXCEPTION);
+        }
+    }
+
+    public void readFromCsvFile() throws CustomException {
+        try {
+            CsvToBeanBuilder<Contact> builder = new CsvToBeanBuilder<>(new FileReader("src/main/resources/AddressBookDictionary.csv"));
+            List<Contact> beans = builder
+                    .withType(Contact.class).build().parse();
+            beans.forEach(System.out::println);
+        } catch (FileNotFoundException e) {
+            throw new CustomException(ExceptionType.IO_EXCEPTION);
+        }
+    }
+
+    public void writeToCsvFile() throws CustomException {
+        StatefulBeanToCsvBuilder<Contact> builder;
+        try (Writer writer = new FileWriter("src/main/resources/AddressBookDictionary.csv")) {
+            builder = new StatefulBeanToCsvBuilder<>(writer);
+            StatefulBeanToCsv<Contact> beanWriter = builder.build();
+            List<Contact> listData = addressBookDictionary.values().stream()
+                    .flatMap(addressBook -> addressBook.getContactList().stream())
+                    .collect(Collectors.toList());
+            beanWriter.write(listData);
+            System.out.println("Data written to file successfully");
+        } catch (IOException e) {
+            throw new CustomException(ExceptionType.IO_EXCEPTION);
+        } catch (CsvRequiredFieldEmptyException | CsvDataTypeMismatchException e) {
+            throw new RuntimeException(e);
         }
     }
 }

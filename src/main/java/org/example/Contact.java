@@ -1,5 +1,7 @@
 package org.example;
 
+import com.opencsv.bean.CsvBindByName;
+
 import java.util.Locale;
 import java.util.Scanner;
 
@@ -12,13 +14,25 @@ public class Contact implements Comparable<Contact> {
     public static final int CITY = 7;
     public static final int STATE = 8;
     public static final int ZIP = 9;
+    @CsvBindByName
     private String firstName;
+    @CsvBindByName
     private String lastName;
+    @CsvBindByName
     private Long phoneNumber;
+    @CsvBindByName
+
     private String emailId;
+    @CsvBindByName
+
     private String area;
+    @CsvBindByName
+
     private String city;
+    @CsvBindByName
+
     private String state;
+    @CsvBindByName
     private int zip;
 
     public Contact(String firstName, String lastName, Long phoneNumber, String emailId, String area, String city, String state, int zip) {
@@ -32,13 +46,17 @@ public class Contact implements Comparable<Contact> {
         this.zip = zip;
     }
 
+    public Contact() {
+
+    }
+
     @Override
     public boolean equals(Object obj) {
         Contact c = (Contact) obj;
         return firstName.equals(c.firstName) && lastName.equals(c.lastName);
     }
 
-    public Contact() {
+    public void createContact() {
         Scanner sc = new Scanner(System.in);
         System.out.println("Enter your details to create contact : ");
         System.out.print(" First name = ");
@@ -130,7 +148,7 @@ public class Contact implements Comparable<Contact> {
 
     @Override
     public String toString() {
-        return "{ First name = " + firstName + "\n Lastname = " + lastName + "\n Phone number = " + phoneNumber + "\n Email Id = " + emailId + "\n Address = " + area + " , " + city + " , " + state + " , " + zip + "\n" + "}";
+        return "{ First name = " + firstName + " | Lastname = " + lastName + " | Phone number = " + phoneNumber + " | Email Id = " + emailId + " | Address = " + area + " , " + city + " , " + state + " , " + zip + "}";
     }
 
     public void edit() {

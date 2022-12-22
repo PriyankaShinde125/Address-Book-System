@@ -1,5 +1,6 @@
 package org.example;
 
+import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 public class AddressBookMain {
@@ -20,8 +21,10 @@ public class AddressBookMain {
     public static final int SORT_BY_ZIP = 14;
     public static final int WRITE_TO_TEXT_FILE = 15;
     public static final int READ_FROM_TEXT_FILE = 16;
+    public static final int READ_FROM_CSV_FILE = 17;
+    public static final int WRITE_TO_CSV_FILE = 18;
 
-    public static void main(String[] args) throws CustomException {
+    public static void main(String[] args) throws CustomException, FileNotFoundException {
         AddressBookDictionary addressBookDictionary = new AddressBookDictionary();
         Scanner sc = new Scanner(System.in);
         String firstName;
@@ -45,6 +48,9 @@ public class AddressBookMain {
                     "\n13 : Sort by state" +
                     "\n14 : Sort by Zip" +
                     "\n15 : Write to file" +
+                    "\n16 : Read from file" +
+                    "\n17 : Read from CSV file" +
+                    "\n18 : Write to csv file" +
                     "\n0 : Exit");
 
             int choice = sc.nextInt();
@@ -55,6 +61,7 @@ public class AddressBookMain {
                     for (int i = 0; i < numberOfContacts; i++) {
                         addressBook = addressBookDictionary.selectAddressBook();
                         Contact contact = new Contact();
+                        contact.createContact();
                         if (addressBookDictionary.isExistContact(contact)) {
                             System.out.println("Already exist. Try with another name");
                             i--;
@@ -154,6 +161,14 @@ public class AddressBookMain {
 
                 case READ_FROM_TEXT_FILE:
                     addressBookDictionary.readDataFromTextFile();
+                    break;
+
+                case READ_FROM_CSV_FILE:
+                    addressBookDictionary.readFromCsvFile();
+                    break;
+
+                case WRITE_TO_CSV_FILE:
+                    addressBookDictionary.writeToCsvFile();
                     break;
 
                 case EXIT:
